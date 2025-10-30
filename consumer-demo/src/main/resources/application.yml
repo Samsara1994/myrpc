@@ -1,0 +1,6 @@
+server:
+  port: 8085
+#解决 swagger2 不兼容 springboot2.7.x版本问题
+rpc:
+  client:
+    zk-address: 127.0.0.1:2181

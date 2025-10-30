@@ -1,0 +1,6 @@
+server:
+  port: 8086
+rpc:
+  server:
+    port: 8888
+    zk-address: 127.0.0.1:2181
