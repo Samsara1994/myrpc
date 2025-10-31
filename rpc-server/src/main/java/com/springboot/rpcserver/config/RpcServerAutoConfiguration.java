@@ -21,7 +21,7 @@ public class RpcServerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public RpcServer rpcServer(RpcServerProperties properties, ZooKeeperServiceRegistry registry) {
-        return new RpcServer(properties.getPort(), registry);
+        return new RpcServer(properties.getIp(), properties.getPort(), registry);
     }
 
     // 扫描@RpcService注解的Bean，自动注册到服务端

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RpcService
-public class UserServiceImpl implements UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+public class UserServiceImpl2 implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl2.class);
 
     @Override
     public User getUserById(Long userId) {

@@ -1,12 +1,11 @@
 package com.springboot.rpcserver.server;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.springboot.rpccommon.ServiceRegistry;
 import com.springboot.rpccommon.dto.GenericRpcRequest;
 import com.springboot.rpccommon.dto.GenericRpcResponse;
 import com.springboot.rpccommon.util.JsonSerializer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -24,9 +23,11 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Slf4j
 @Component
 public class RpcServer {
     private final int port;
+    private final String ip;
     private final ServiceRegistry registry;
     private final Map<String, Object> serviceMap = new HashMap<>();
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -35,14 +36,15 @@ public class RpcServer {
     private volatile ServerSocket serverSocket;
     private volatile boolean isRunning = false; // 标记服务是否运行
 
-    public RpcServer(int port, ServiceRegistry registry) {
+    public RpcServer(String ip, int port, ServiceRegistry registry) {
         this.port = port;
         this.registry = registry;
+        this.ip = ip;
     }
 
     public void registerService(Class<?> serviceInterface, Object serviceImpl) {
         serviceMap.put(serviceInterface.getName(), serviceImpl);
-        registry.register(serviceInterface.getName(), "localhost:" + port);
+        registry.register(serviceInterface.getName(), ip + ":" + port);
     }
 
     // 启动服务（用@EventListener监听Spring容器初始化完成事件，替代@PostConstruct）
@@ -50,12 +52,12 @@ public class RpcServer {
     public void start() {
         try {
             if (isRunning) {
-                System.out.println("服务端已启动，无需重复启动");
+                log.warn("rpc server is already running.");
                 return;
             }
             serverSocket = new ServerSocket(port);
             isRunning = true;
-            System.out.println("RPC服务端启动成功，端口：" + port);
+            log.info("rpc server is running, listening on port {}", port);
 
             // 启动线程监听请求
             new Thread(this::listen).start();
@@ -71,14 +73,14 @@ public class RpcServer {
             try {
                 // 接收客户端连接（若Socket已关闭，accept()会抛出IOException）
                 Socket socket = serverSocket.accept();
-                System.out.println("接收到客户端连接：" + socket.getInetAddress());
+                log.info("accept client socket:{}", socket.getInetAddress());
                 executor.submit(new RequestHandler(socket));
             } catch (IOException e) {
                 // 若服务已停止，忽略关闭异常；否则打印错误
                 if (isRunning) {
-                    System.err.println("服务端接收连接失败：" + e.getMessage());
+                    log.error("accept client socket error:{}", e.getMessage());
                 } else {
-                    System.out.println("服务端已停止，停止接收连接");
+                    log.info("server stopped");
                 }
                 break; // Socket已关闭，退出监听循环
             }
@@ -121,7 +123,7 @@ public class RpcServer {
                 try (PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)) {
                     writer.println(JsonSerializer.serialize(errorResponse));
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    log.error(ex.getMessage(), ex);
                 }
             }
         }

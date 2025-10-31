@@ -3,6 +3,9 @@ package com.springboot.rpcclient.config;
 import com.springboot.rpcclient.circuitbreaker.CircuitBreaker;
 import com.springboot.rpcclient.loadbalance.LoadBalancer;
 import com.springboot.rpcclient.RpcProxyFactory;
+import com.springboot.rpcclient.loadbalance.LoadBalancerStrategyFactory;
+import com.springboot.rpcclient.loadbalance.RandomStrategy;
+import com.springboot.rpcclient.loadbalance.RoundRobinStrategy;
 import com.springboot.rpcclient.processor.RpcReferenceBeanPostProcessor;
 import com.springboot.rpccommon.ZooKeeperServiceRegistry;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,11 +24,27 @@ public class RpcClientAutoConfiguration {
         return new ZooKeeperServiceRegistry(properties.getZkAddress());
     }
 
-    // 注册负载均衡器（轮询策略）
+    // 注册负载均衡策略工厂
+    @Bean
+    public LoadBalancerStrategyFactory loadBalancerStrategyFactory(){
+        return new LoadBalancerStrategyFactory();
+    }
+
+    // 注册负载均衡器
     @Bean
     @ConditionalOnMissingBean
-    public LoadBalancer loadBalancer() {
-        return new LoadBalancer();
+    public LoadBalancer loadBalancer(LoadBalancerStrategyFactory factory, RpcClientProperties properties) {
+        return new LoadBalancer(factory, properties);
+    }
+
+    @Bean
+    public RandomStrategy randomStrategy(){
+        return new RandomStrategy();
+    }
+
+    @Bean
+    public RoundRobinStrategy roundRobinStrategy(){
+        return new RoundRobinStrategy();
     }
 
     // 注册熔断组件

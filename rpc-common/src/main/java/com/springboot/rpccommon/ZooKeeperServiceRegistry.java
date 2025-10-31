@@ -1,4 +1,5 @@
 package com.springboot.rpccommon;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
 public class ZooKeeperServiceRegistry implements ServiceRegistry {
     private static final String BASE_PATH = "/rpc-microservice";
     private final CuratorFramework client;
@@ -33,7 +35,7 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry {
             // 注册实例（临时节点，服务断开连接后自动删除）
             String instancePath = servicePath + "/" + serviceAddress;
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath);
-            System.out.println("服务注册成功：" + instancePath);
+            log.info("register service: {} success", serviceName);
         } catch (Exception e) {
             e.printStackTrace();
         }

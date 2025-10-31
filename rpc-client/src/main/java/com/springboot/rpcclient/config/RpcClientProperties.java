@@ -18,4 +18,7 @@ public class RpcClientProperties {
         private long resetTimeout = 5000; // 熔断重置时间（毫秒）
 
     }
+
+    // 负载均衡配置
+    private String loadBalancer = "roundRobin";
 }

@@ -3,4 +3,5 @@ server:
 rpc:
   server:
     port: 9999
+    ip: localhost
     zk-address: 127.0.0.1:2181
