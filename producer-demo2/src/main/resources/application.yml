@@ -1,0 +1,6 @@
+server:
+  port: 8087
+rpc:
+  server:
+    port: 9999
+    zk-address: 127.0.0.1:2181
