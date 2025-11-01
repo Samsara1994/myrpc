@@ -1,7 +1,7 @@
 package com.springboot.rpcserver.server;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.springboot.rpccommon.ServiceRegistry;
+import com.springboot.rpccommon.ServiceGovernance;
 import com.springboot.rpccommon.dto.GenericRpcRequest;
 import com.springboot.rpccommon.dto.GenericRpcResponse;
 import com.springboot.rpccommon.util.JsonSerializer;
@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 public class RpcServer {
     private final int port;
     private final String ip;
-    private final ServiceRegistry registry;
+    private final ServiceGovernance registry;
     private final Map<String, Object> serviceMap = new HashMap<>();
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
@@ -36,7 +36,7 @@ public class RpcServer {
     private volatile ServerSocket serverSocket;
     private volatile boolean isRunning = false; // 标记服务是否运行
 
-    public RpcServer(String ip, int port, ServiceRegistry registry) {
+    public RpcServer(String ip, int port, ServiceGovernance registry) {
         this.port = port;
         this.registry = registry;
         this.ip = ip;
@@ -71,7 +71,7 @@ public class RpcServer {
     private void listen() {
         while (isRunning && !serverSocket.isClosed()) { // 双重判断，避免Socket已关闭仍循环
             try {
-                // 接收客户端连接（若Socket已关闭，accept()会抛出IOException）
+                // 阻塞等待接收客户端连接（若Socket已关闭，accept()会抛出IOException）
                 Socket socket = serverSocket.accept();
                 log.info("accept client socket:{}", socket.getInetAddress());
                 executor.submit(new RequestHandler(socket));

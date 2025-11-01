@@ -7,7 +7,7 @@ import com.springboot.rpcclient.loadbalance.LoadBalancerStrategyFactory;
 import com.springboot.rpcclient.loadbalance.RandomStrategy;
 import com.springboot.rpcclient.loadbalance.RoundRobinStrategy;
 import com.springboot.rpcclient.processor.RpcReferenceBeanPostProcessor;
-import com.springboot.rpccommon.ZooKeeperServiceRegistry;
+import com.springboot.rpcclient.ZookeeperServiceDiscovery;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +20,8 @@ public class RpcClientAutoConfiguration {
     // 注册ZK注册中心
     @Bean
     @ConditionalOnMissingBean
-    public ZooKeeperServiceRegistry zooKeeperServiceRegistry(RpcClientProperties properties) {
-        return new ZooKeeperServiceRegistry(properties.getZkAddress());
+    public ZookeeperServiceDiscovery zooKeeperServiceRegistry(RpcClientProperties properties) {
+        return new ZookeeperServiceDiscovery(properties.getZkAddress());
     }
 
     // 注册负载均衡策略工厂
@@ -61,7 +61,7 @@ public class RpcClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public RpcProxyFactory rpcProxyFactory(
-            ZooKeeperServiceRegistry registry,
+            ZookeeperServiceDiscovery registry,
             LoadBalancer loadBalancer,
             CircuitBreaker circuitBreaker) {
         return new RpcProxyFactory(registry, loadBalancer, circuitBreaker);

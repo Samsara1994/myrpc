@@ -1,13 +1,11 @@
 package com.springboot.rpcclient;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.springboot.rpcclient.circuitbreaker.CircuitBreaker;
 import com.springboot.rpcclient.loadbalance.LoadBalancer;
 import com.springboot.rpccommon.dto.GenericRpcRequest;
 import com.springboot.rpccommon.dto.GenericRpcResponse;
-import com.springboot.rpccommon.ZooKeeperServiceRegistry;
 import com.springboot.rpccommon.util.JsonSerializer;
 import org.apache.commons.lang.StringUtils;
 
@@ -22,11 +20,11 @@ import java.net.Socket;
 import java.util.List;
 
 public class RpcProxyFactory {
-    private final ZooKeeperServiceRegistry registry;
+    private final ZookeeperServiceDiscovery registry;
     private final LoadBalancer loadBalancer;
     private final CircuitBreaker circuitBreaker;
 
-    public RpcProxyFactory(ZooKeeperServiceRegistry registry, LoadBalancer loadBalancer, CircuitBreaker circuitBreaker) {
+    public RpcProxyFactory(ZookeeperServiceDiscovery registry, LoadBalancer loadBalancer, CircuitBreaker circuitBreaker) {
         this.registry = registry;
         this.loadBalancer = loadBalancer;
         this.circuitBreaker = circuitBreaker;
