@@ -37,7 +37,7 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry {
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath);
             log.info("register service: {} success", serviceName);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("register service: {} error", serviceName, e);
         }
     }
 
@@ -52,7 +52,7 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry {
             // 获取所有实例节点（IP:Port）
             return client.getChildren().forPath(servicePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("getServiceInstances error", e);
             return new ArrayList<>();
         }
     }
