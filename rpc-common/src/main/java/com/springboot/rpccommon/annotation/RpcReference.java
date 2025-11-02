@@ -9,4 +9,6 @@ import java.lang.annotation.*;
 public @interface RpcReference {
     // 服务接口类型（默认取字段类型）
     Class<?> value() default void.class;
+
+    String version() default "";
 }

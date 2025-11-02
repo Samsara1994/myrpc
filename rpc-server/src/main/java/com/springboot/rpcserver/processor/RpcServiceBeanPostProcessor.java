@@ -1,4 +1,4 @@
-package com.springboot.rpcserver;
+package com.springboot.rpcserver.processor;
 
 import com.springboot.rpccommon.annotation.RpcService;
 import com.springboot.rpcserver.server.RpcServer;
@@ -19,7 +19,8 @@ public class RpcServiceBeanPostProcessor implements BeanPostProcessor {
             Class<?> serviceInterface = annotation.value() == void.class
                     ? bean.getClass().getInterfaces()[0]
                     : annotation.value();
-            rpcServer.registerService(serviceInterface, bean);
+            String version = annotation.version();
+            rpcServer.registerService(serviceInterface, version, bean);
         }
         return bean;
     }

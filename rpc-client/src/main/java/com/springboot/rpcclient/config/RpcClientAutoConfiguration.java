@@ -8,6 +8,7 @@ import com.springboot.rpcclient.loadbalance.RandomStrategy;
 import com.springboot.rpcclient.loadbalance.RoundRobinStrategy;
 import com.springboot.rpcclient.processor.RpcReferenceBeanPostProcessor;
 import com.springboot.rpcclient.ZookeeperServiceDiscovery;
+import com.springboot.rpcclient.processor.RpcReferenceScanner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -71,5 +72,10 @@ public class RpcClientAutoConfiguration {
     @Bean
     public RpcReferenceBeanPostProcessor rpcReferenceBeanPostProcessor(RpcProxyFactory proxyFactory) {
         return new RpcReferenceBeanPostProcessor(proxyFactory);
+    }
+
+    @Bean
+    public RpcReferenceScanner rpcReferenceScanner() {
+        return new RpcReferenceScanner();
     }
 }

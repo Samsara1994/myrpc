@@ -2,7 +2,7 @@ package com.springboot.rpcserver.config;
 
 import com.springboot.rpcserver.server.ZooKeeperServiceRegistry;
 import com.springboot.rpcserver.server.RpcServer;
-import com.springboot.rpcserver.RpcServiceBeanPostProcessor;
+import com.springboot.rpcserver.processor.RpcServiceBeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

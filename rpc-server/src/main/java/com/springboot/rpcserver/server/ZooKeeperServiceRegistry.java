@@ -23,9 +23,9 @@ public class ZooKeeperServiceRegistry implements ServiceGovernance {
 
     // 注册服务：/rpc-microservice/服务名/实例地址（临时节点，服务下线自动删除）
     @Override
-    public void register(String serviceName, String serviceAddress) {
+    public void register(String serviceName, String version, String serviceAddress) {
         try {
-            String servicePath = BASE_PATH + "/" + serviceName;
+            String servicePath = version.isEmpty() ? BASE_PATH + "/" + serviceName : BASE_PATH + "/" + serviceName + "/" + version;
             // 创建服务根节点（持久节点）
             if (client.checkExists().forPath(servicePath) == null) {
                 client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(servicePath);

@@ -9,4 +9,7 @@ import java.lang.annotation.*;
 public @interface RpcService {
     // 服务接口类型（默认取实现的第一个接口）
     Class<?> value() default void.class;
+
+    // 服务版本（默认空字符串，用于区分同接口不同实现）
+    String version() default "";
 }

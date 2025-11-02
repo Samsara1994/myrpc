@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
-    @RpcReference // 自动注入代理
+    @RpcReference(version = "1.0") // 自动注入代理
     private UserService userService;
 
     @GetMapping("/user/abc")

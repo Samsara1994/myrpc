@@ -42,9 +42,9 @@ public class RpcServer {
         this.ip = ip;
     }
 
-    public void registerService(Class<?> serviceInterface, Object serviceImpl) {
+    public void registerService(Class<?> serviceInterface, String version, Object serviceImpl) {
         serviceMap.put(serviceInterface.getName(), serviceImpl);
-        registry.register(serviceInterface.getName(), ip + ":" + port);
+        registry.register(serviceInterface.getName(), version,ip + ":" + port);
     }
 
     // 启动服务（用@EventListener监听Spring容器初始化完成事件，替代@PostConstruct）

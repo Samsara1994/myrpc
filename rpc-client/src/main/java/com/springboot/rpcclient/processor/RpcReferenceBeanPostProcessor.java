@@ -9,7 +9,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import java.lang.reflect.Field;
 
-public class RpcReferenceBeanPostProcessor implements BeanPostProcessor {
+public class RpcReferenceBeanPostProcessor implements BeanPostProcessor{
     private static final Logger log = LoggerFactory.getLogger(RpcReferenceBeanPostProcessor.class);
     private final RpcProxyFactory proxyFactory;
 
@@ -23,10 +23,8 @@ public class RpcReferenceBeanPostProcessor implements BeanPostProcessor {
         for (Field field : fields) {
             RpcReference annotation = field.getAnnotation(RpcReference.class);
             if (annotation != null) {
-                Class<?> serviceInterface = annotation.value() == void.class
-                        ? field.getType()
-                        : annotation.value();
-                Object proxy = proxyFactory.createProxy(serviceInterface);
+                Class<?> serviceInterface = annotation.value() == void.class ? field.getType() : annotation.value();
+                Object proxy = proxyFactory.createProxy(serviceInterface, annotation.version());
                 field.setAccessible(true);
                 try {
                     field.set(bean, proxy);

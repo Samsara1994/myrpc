@@ -32,20 +32,25 @@ public class RpcProxyFactory {
 
     // 生成服务接口的泛型代理
     @SuppressWarnings("unchecked")
-    public <T> T createProxy(Class<T> serviceInterface) {
+    public <T> T createProxy(Class<T> serviceInterface, String version) {
         return (T) Proxy.newProxyInstance(
                 serviceInterface.getClassLoader(),
                 new Class[]{serviceInterface},
-                new GenericInvocationHandler(serviceInterface)
+                new RpcInvocationHandler(serviceInterface, version)
         );
     }
 
-    // 泛型方法调用处理器
-    private class GenericInvocationHandler implements InvocationHandler {
-        private final Class<?> serviceInterface;
+    /**
+     * 代理处理器：执行 RPC 调用逻辑
+     */
+    private class RpcInvocationHandler implements InvocationHandler {
 
-        public GenericInvocationHandler(Class<?> serviceInterface) {
+        private final Class<?> serviceInterface;
+        private final String version;
+
+        public RpcInvocationHandler(Class<?> serviceInterface, String version) {
             this.serviceInterface = serviceInterface;
+            this.version = version;
         }
 
         @Override
@@ -66,7 +71,7 @@ public class RpcProxyFactory {
 
 
             // 3. 服务发现：获取实例列表
-            List<String> instances = registry.getServiceInstances(serviceInterface.getName());
+            List<String> instances = registry.getServiceInstances(serviceInterface.getName(), version);
             if (instances.isEmpty()) {
                 throw new RuntimeException("无可用服务实例：" + serviceInterface.getName());
             }
