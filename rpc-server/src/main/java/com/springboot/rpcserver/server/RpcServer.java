@@ -28,6 +28,8 @@ import java.util.concurrent.Executors;
 public class RpcServer {
     private final int port;
     private final String ip;
+
+    // 服务注册工具
     private final ServiceGovernance registry;
     private final Map<String, Object> serviceMap = new HashMap<>();
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -37,9 +39,9 @@ public class RpcServer {
     private volatile boolean isRunning = false; // 标记服务是否运行
 
     public RpcServer(String ip, int port, ServiceGovernance registry) {
+        this.ip = ip;
         this.port = port;
         this.registry = registry;
-        this.ip = ip;
     }
 
     public void registerService(Class<?> serviceInterface, String version, Object serviceImpl) {
